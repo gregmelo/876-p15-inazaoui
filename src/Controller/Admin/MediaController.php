@@ -64,9 +64,19 @@ class MediaController extends AbstractController
     public function delete(int $id): Response
     {
         $media = $this->em->getRepository(Media::class)->find($id);
+
+        if (!$media) {
+            throw $this->createNotFoundException('Média introuvable.');
+        }
+
+        if (!$this->isGranted('ROLE_ADMIN') && $media->getUser() !== $this->getUser()) {
+            throw $this->createAccessDeniedException('Vous ne pouvez pas supprimer ce média.');
+        }
+
         $this->em->remove($media);
         $this->em->flush();
         unlink($media->getPath());
+
         return $this->redirectToRoute('admin_media_index');
     }
 }
