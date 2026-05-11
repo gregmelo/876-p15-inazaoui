@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Controller;
 
 use App\Entity\Album;
@@ -22,7 +23,11 @@ class HomeController extends AbstractController
     #[Route('/guests', name: 'guests')]
     public function guests(): Response
     {
-        $guests = $this->em->getRepository(User::class)->findBy(['admin' => false]);
+        $guests = $this->em->getRepository(User::class)->findBy([
+            'admin' => false, 
+            'blocked' => false], 
+            ['name' => 'ASC'
+        ]);
         return $this->render('front/guests.html.twig', [
             'guests' => $guests
         ]);
@@ -32,6 +37,11 @@ class HomeController extends AbstractController
     public function guest(int $id): Response
     {
         $guest = $this->em->getRepository(User::class)->find($id);
+
+        if (!$guest || $guest->isBlocked()) {
+            return $this->redirectToRoute('guests');
+        }
+
         return $this->render('front/guest.html.twig', [
             'guest' => $guest
         ]);

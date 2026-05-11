@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Entity;
 
 use App\Repository\UserRepository;
@@ -35,14 +36,23 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Media::class, mappedBy: 'user')]
     private Collection $medias;
 
+    #[ORM\Column(options: ['default' => false])]
+    private bool $blocked = false;
+
     public function __construct()
     {
         $this->medias = new ArrayCollection();
     }
 
-    public function getId(): ?int { return $this->id; }
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
 
-    public function getEmail(): ?string { return $this->email; }
+    public function getEmail(): ?string
+    {
+        return $this->email;
+    }
 
     public function setEmail(string $email): static
     {
@@ -50,14 +60,20 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getUserIdentifier(): string { return (string) $this->email; }
+    public function getUserIdentifier(): string
+    {
+        return (string) $this->email;
+    }
 
     public function getRoles(): array
     {
         return $this->admin ? ['ROLE_ADMIN', 'ROLE_USER'] : ['ROLE_USER'];
     }
 
-    public function getPassword(): string { return $this->password; }
+    public function getPassword(): string
+    {
+        return $this->password;
+    }
 
     public function setPassword(string $password): static
     {
@@ -65,21 +81,55 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    public function isBlocked(): bool
+    {
+        return $this->blocked;
+    }
+
     public function eraseCredentials(): void {}
 
-    public function getName(): ?string { return $this->name; }
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
 
-    public function setName(?string $name): void { $this->name = $name; }
+    public function setName(?string $name): void
+    {
+        $this->name = $name;
+    }
 
-    public function getDescription(): ?string { return $this->description; }
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
 
-    public function setDescription(?string $description): void { $this->description = $description; }
+    public function setDescription(?string $description): void
+    {
+        $this->description = $description;
+    }
 
-    public function getMedias(): Collection { return $this->medias; }
+    public function getMedias(): Collection
+    {
+        return $this->medias;
+    }
 
-    public function setMedias(Collection $medias): void { $this->medias = $medias; }
+    public function setMedias(Collection $medias): void
+    {
+        $this->medias = $medias;
+    }
 
-    public function isAdmin(): bool { return $this->admin; }
+    public function isAdmin(): bool
+    {
+        return $this->admin;
+    }
 
-    public function setAdmin(bool $admin): void { $this->admin = $admin; }
+    public function setAdmin(bool $admin): void
+    {
+        $this->admin = $admin;
+    }
+
+    public function setBlocked(bool $blocked): void
+    {
+        $this->blocked = $blocked;
+    }
 }
