@@ -40,28 +40,31 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $this->getEntityManager()->flush();
     }
 
-//    /**
-//     * @return User[] Returns an array of User objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('u')
-//            ->andWhere('u.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('u.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    /**
+     * @return User[] Returns an array of active guests
+     */
+    public function findActiveGuests(): array
+    {
+        return $this->createQueryBuilder('u')
+            ->andWhere('u.admin = :admin')
+            ->andWhere('u.blocked = :blocked')
+            ->setParameter('admin', false)
+            ->setParameter('blocked', false)
+            ->orderBy('u.name', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
 
-//    public function findOneBySomeField($value): ?User
-//    {
-//        return $this->createQueryBuilder('u')
-//            ->andWhere('u.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    /**
+     * @return User[] Returns an array of all guests
+     */
+    public function findAllGuests(): array
+    {
+        return $this->createQueryBuilder('u')
+            ->andWhere('u.admin = :admin')
+            ->setParameter('admin', false)
+            ->orderBy('u.name', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
 }

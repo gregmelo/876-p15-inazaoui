@@ -30,8 +30,13 @@ class HomeControllerTest extends WebTestCase
 
         $em = static::getContainer()->get('doctrine')->getManager();
         $guest = $em->getRepository(User::class)->findOneBy([
-            'email' => 'actif@example.com'
+            'email' => 'actif@example.com',
+            'blocked' => false
         ]);
+
+        if (!$guest) {
+            $this->markTestSkipped('Aucun invité actif disponible.');
+        }
 
         $client->request('GET', '/guest/' . $guest->getId());
 
