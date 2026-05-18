@@ -85,6 +85,12 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
             ->getResult();
     }
 
+    /**
+     * Retourne tous les invités actifs (non bloqués) avec leurs médias pré-chargés, triés par nom.
+     * Le LEFT JOIN évite les requêtes N+1 lors de l'affichage des médias de chaque invité.
+     *
+     * @return User[] La liste des invités actifs avec leurs médias hydratés
+     */
     public function findActiveGuestsWithMediaCount(): array
     {
         return $this->createQueryBuilder('u')
