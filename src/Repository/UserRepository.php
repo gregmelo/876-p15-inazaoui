@@ -84,4 +84,18 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
             ->getQuery()
             ->getResult();
     }
+
+    public function findActiveGuestsWithMediaCount(): array
+    {
+        return $this->createQueryBuilder('u')
+            ->leftJoin('u.medias', 'm')
+            ->addSelect('m')
+            ->andWhere('u.admin = :admin')
+            ->andWhere('u.blocked = :blocked')
+            ->setParameter('admin', false)
+            ->setParameter('blocked', false)
+            ->orderBy('u.name', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
 }

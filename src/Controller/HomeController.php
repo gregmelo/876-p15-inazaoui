@@ -42,11 +42,7 @@ class HomeController extends AbstractController
     #[Route('/guests', name: 'guests')]
     public function guests(): Response
     {
-        $guests = $this->em->getRepository(User::class)->findBy([
-            'admin' => false,
-            'blocked' => false],
-            ['name' => 'ASC'
-        ]);
+        $guests = $this->em->getRepository(User::class)->findActiveGuestsWithMediaCount();
         return $this->render('front/guests.html.twig', [
             'guests' => $guests
         ]);
