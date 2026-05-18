@@ -6,8 +6,16 @@ use App\Entity\User;
 use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
+/**
+ * Tests d'intégration du dépôt UserRepository.
+ *
+ * Vérifie les requêtes personnalisées sur les utilisateurs en base de données de test.
+ */
 class UserRepositoryTest extends KernelTestCase
 {
+    /**
+     * Vérifie que findActiveGuests retourne uniquement des invités non bloqués et non administrateurs.
+     */
     public function testFindActiveGuests(): void
     {
         self::bootKernel();
@@ -22,6 +30,10 @@ class UserRepositoryTest extends KernelTestCase
         }
     }
 
+    /**
+     * Vérifie que findAllGuests retourne au moins deux invités (actif et bloqué),
+     * aucun n'étant administrateur.
+     */
     public function testFindAllGuests(): void
     {
         self::bootKernel();
@@ -36,6 +48,10 @@ class UserRepositoryTest extends KernelTestCase
         }
     }
 
+    /**
+     * Vérifie que upgradePassword met bien à jour le mot de passe haché en base de données.
+     * Restaure l'ancien mot de passe après le test.
+     */
     public function testUpgradePassword(): void
     {
         self::bootKernel();

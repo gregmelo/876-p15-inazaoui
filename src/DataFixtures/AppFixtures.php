@@ -9,10 +9,24 @@ use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
+/**
+ * Fixtures de l'application pour les tests et le développement.
+ *
+ * Crée les données initiales : l'administrateur (Ina Zaoui), un album de test,
+ * un invité actif, un invité bloqué et des médias associés.
+ */
 class AppFixtures extends Fixture
 {
+    /**
+     * @param UserPasswordHasherInterface $hasher Service de hachage de mot de passe
+     */
     public function __construct(private UserPasswordHasherInterface $hasher) {}
 
+    /**
+     * Charge les données de test en base de données.
+     *
+     * @param ObjectManager $manager Le gestionnaire d'objets Doctrine
+     */
     public function load(ObjectManager $manager): void
     {
         // Création d'Ina (admin)

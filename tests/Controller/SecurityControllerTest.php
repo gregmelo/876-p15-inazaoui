@@ -4,8 +4,17 @@ namespace App\Tests\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
+/**
+ * Tests fonctionnels du contrôleur de sécurité (connexion/déconnexion).
+ *
+ * Vérifie l'accessibilité du formulaire de connexion, le comportement avec
+ * des identifiants invalides et la déconnexion d'un utilisateur connecté.
+ */
 class SecurityControllerTest extends WebTestCase
 {
+    /**
+     * Vérifie que la page de connexion est accessible et contient un formulaire.
+     */
     public function testLoginPageIsAccessible(): void
     {
         $client = static::createClient();
@@ -15,6 +24,9 @@ class SecurityControllerTest extends WebTestCase
         $this->assertSelectorExists('form');
     }
 
+    /**
+     * Vérifie que la soumission du formulaire avec des identifiants invalides redirige vers /login.
+     */
     public function testLoginWithInvalidCredentials(): void
     {
         $client = static::createClient();
@@ -28,6 +40,9 @@ class SecurityControllerTest extends WebTestCase
         $this->assertResponseRedirects('/login');
     }
 
+    /**
+     * Vérifie que la déconnexion d'un utilisateur connecté déclenche une redirection.
+     */
     public function testLogout(): void
     {
         $client = static::createClient();

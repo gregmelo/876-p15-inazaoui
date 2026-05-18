@@ -6,8 +6,16 @@ use App\Entity\User;
 use App\Repository\MediaRepository;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
+/**
+ * Tests d'intégration du dépôt MediaRepository.
+ *
+ * Vérifie les requêtes personnalisées sur les médias en base de données de test.
+ */
 class MediaRepositoryTest extends KernelTestCase
 {
+    /**
+     * Vérifie que findByUserOrderedById retourne uniquement les médias appartenant à l'utilisateur donné.
+     */
     public function testFindByUserOrderedById(): void
     {
         self::bootKernel();
@@ -23,6 +31,9 @@ class MediaRepositoryTest extends KernelTestCase
         }
     }
 
+    /**
+     * Vérifie que findByUserOrderedById retourne un tableau vide pour un utilisateur sans médias.
+     */
     public function testFindByUserReturnsEmptyForNewUser(): void
     {
         self::bootKernel();

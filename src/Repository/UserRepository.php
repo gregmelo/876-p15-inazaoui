@@ -10,6 +10,11 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
 
 /**
+ * Dépôt de données pour l'entité User.
+ *
+ * Fournit les méthodes de requête Doctrine pour récupérer des utilisateurs depuis la base de données.
+ * Implémente PasswordUpgraderInterface pour la mise à jour automatique du hachage des mots de passe.
+ *
  * @extends ServiceEntityRepository<User>
  *
  * @implements PasswordUpgraderInterface<User>
@@ -21,13 +26,21 @@ use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
  */
 class UserRepository extends ServiceEntityRepository implements PasswordUpgraderInterface
 {
+    /**
+     * @param ManagerRegistry $registry Le registre de gestionnaires Doctrine
+     */
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, User::class);
     }
 
     /**
-     * Used to upgrade (rehash) the user's password automatically over time.
+     * Met à jour (re-hache) le mot de passe de l'utilisateur lors de la connexion si nécessaire.
+     * Appelé automatiquement par Symfony lorsque l'algorithme de hachage a changé.
+     *
+     * @param PasswordAuthenticatedUserInterface $user              L'utilisateur dont le mot de passe doit être mis à jour
+     * @param string                             $newHashedPassword Le nouveau mot de passe haché
+     * @throws UnsupportedUserException Si l'utilisateur n'est pas une instance de User
      */
     public function upgradePassword(PasswordAuthenticatedUserInterface $user, string $newHashedPassword): void
     {
@@ -41,7 +54,9 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
     }
 
     /**
-     * @return User[] Returns an array of active guests
+     * Retourne tous les invités actifs (non bloqués), triés par nom.
+     *
+     * @return User[] La liste des invités actifs
      */
     public function findActiveGuests(): array
     {
@@ -56,7 +71,9 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
     }
 
     /**
-     * @return User[] Returns an array of all guests
+     * Retourne tous les invités (bloqués ou non), triés par nom.
+     *
+     * @return User[] La liste de tous les invités
      */
     public function findAllGuests(): array
     {

@@ -10,10 +10,26 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
+/**
+ * Contrôleur d'administration pour la gestion des médias.
+ *
+ * Accessible aux administrateurs et aux invités connectés.
+ * Les invités ne voient et ne gèrent que leurs propres médias.
+ */
 class MediaController extends AbstractController
 {
+    /**
+     * @param EntityManagerInterface $em Gestionnaire d'entités Doctrine
+     */
     public function __construct(private EntityManagerInterface $em) {}
 
+    /**
+     * Affiche la liste paginée des médias (25 par page).
+     * Les administrateurs voient tous les médias ; les invités ne voient que les leurs.
+     *
+     * @param Request $request La requête HTTP courante (paramètre `page` en query string)
+     * @return Response La réponse HTTP avec la liste des médias
+     */
     #[Route('/admin/media', name: 'admin_media_index')]
     public function index(Request $request): Response
     {
@@ -39,6 +55,13 @@ class MediaController extends AbstractController
         ]);
     }
 
+    /**
+     * Affiche et traite le formulaire d'ajout d'un média.
+     * Génère un nom de fichier unique et déplace l'image dans le dossier uploads/.
+     *
+     * @param Request $request La requête HTTP courante
+     * @return Response La réponse HTTP avec le formulaire ou une redirection
+     */
     #[Route('/admin/media/add', name: 'admin_media_add')]
     public function add(Request $request): Response
     {
@@ -60,6 +83,13 @@ class MediaController extends AbstractController
         return $this->render('admin/media/add.html.twig', ['form' => $form->createView()]);
     }
 
+    /**
+     * Supprime un média ainsi que son fichier physique.
+     * Lève une exception si le média est introuvable ou si l'utilisateur n'en est pas propriétaire.
+     *
+     * @param int $id Identifiant du média à supprimer
+     * @return Response La redirection vers la liste des médias
+     */
     #[Route('/admin/media/delete/{id}', name: 'admin_media_delete')]
     public function delete(int $id): Response
     {
