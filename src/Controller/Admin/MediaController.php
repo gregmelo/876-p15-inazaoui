@@ -73,10 +73,35 @@ class MediaController extends AbstractController
             if (!$this->isGranted('ROLE_ADMIN')) {
                 $media->setUser($this->getUser());
             }
-            $media->setPath('uploads/' . md5(uniqid()) . '.' . $media->getFile()->guessExtension());
-            $media->getFile()->move('uploads/', $media->getPath());
+
+            $file = $media->getFile();
+            $webpPath = 'uploads/' . md5(uniqid()) . '.webp';
+            $fullPath = $this->getParameter('kernel.project_dir') . '/public/' . $webpPath;
+
+            // Convertit en WebP selon le type
+            $tmpPath = $file->getPathname();
+            $mimeType = $file->getMimeType();
+
+            $image = match ($mimeType) {
+                'image/jpeg' => imagecreatefromjpeg($tmpPath),
+                'image/png' => imagecreatefrompng($tmpPath),
+                'image/gif' => imagecreatefromgif($tmpPath),
+                'image/webp' => imagecreatefromwebp($tmpPath),
+                default => null
+            };
+
+            if ($image) {
+                imagewebp($image, $fullPath, 80);
+                $media->setPath($webpPath);
+            } else {
+                // Fallback sans conversion
+                $media->setPath('uploads/' . md5(uniqid()) . '.' . $file->guessExtension());
+                $file->move('uploads/', $media->getPath());
+            }
+
             $this->em->persist($media);
             $this->em->flush();
+
             return $this->redirectToRoute('admin_media_index');
         }
 
