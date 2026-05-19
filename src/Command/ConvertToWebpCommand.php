@@ -11,12 +11,23 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
+/**
+ * Commande CLI pour la conversion des images existantes en format WebP.
+ *
+ * Parcourt tous les médias en base de données, convertit les fichiers image
+ * (JPEG, PNG, GIF) au format WebP avec une qualité de 80%, supprime les
+ * originaux et met à jour les chemins en base de données en une seule transaction.
+ */
 #[AsCommand(
     name: 'app:convert-to-webp',
     description: 'Convertit toutes les images en WebP et met à jour la BDD',
 )]
 class ConvertToWebpCommand extends Command
 {
+    /**
+     * @param EntityManagerInterface $em         Gestionnaire d'entités Doctrine
+     * @param string                 $projectDir Chemin absolu vers la racine du projet (injecté via %kernel.project_dir%)
+     */
     public function __construct(
         private EntityManagerInterface $em,
         #[Autowire('%kernel.project_dir%')]
@@ -25,6 +36,13 @@ class ConvertToWebpCommand extends Command
         parent::__construct();
     }
 
+    /**
+     * Exécute la conversion par lot de toutes les images non-WebP.
+     *
+     * @param InputInterface  $input  Interface de lecture des entrées console
+     * @param OutputInterface $output Interface d'écriture des sorties console
+     * @return int Code de retour de la commande (Command::SUCCESS)
+     */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);

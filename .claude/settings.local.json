@@ -2,7 +2,9 @@
   "permissions": {
     "allow": [
       "Bash(Get-ChildItem -Path \"c:\\\\Users\\\\grego\\\\Desktop\\\\876-p15-inazaoui\" -Depth 0 -Directory)",
-      "Bash(Select-Object Name)"
+      "Bash(Select-Object Name)",
+      "Bash(Get-ChildItem -Path \"c:\\\\Users\\\\grego\\\\Desktop\\\\876-p15-inazaoui\" -Recurse -Force)",
+      "Bash(Select-Object FullName, PSIsContainer)"
     ]
   }
 }
