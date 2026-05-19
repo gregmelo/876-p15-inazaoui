@@ -29,17 +29,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private bool $admin = false;
 
-    /** @var string|null Nom d'affichage de l'utilisateur */
-    #[ORM\Column]
-    private ?string $name;
+    /** @var string Nom d'affichage de l'utilisateur */
+    #[ORM\Column(length: 255)]
+    private string $name = '';
 
     /** @var string|null Description ou biographie de l'utilisateur */
     #[ORM\Column(type: 'text', nullable: true)]
     private ?string $description;
 
-    /** @var string|null Adresse e-mail unique utilisée comme identifiant de connexion */
+    /** @var string Adresse e-mail unique utilisée comme identifiant de connexion */
     #[ORM\Column(length: 180, unique: true)]
-    private ?string $email = null;
+    private string $email = '';
 
     /** @var string Mot de passe haché de l'utilisateur */
     #[ORM\Column]
