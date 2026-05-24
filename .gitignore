@@ -5,7 +5,8 @@
 /.env.*.local
 /config/secrets/prod/prod.decrypt.private.php
 /public/bundles/
-/var/
+/var/*
+!var/coverage
 /vendor/
 ###< symfony/framework-bundle ###
 
@@ -23,4 +24,3 @@
 phpstan.neon
 ###< phpstan/phpstan ###
 
-!var/coverage
